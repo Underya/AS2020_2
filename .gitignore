@@ -340,3 +340,5 @@ ASALocalRun/
 healthchecksdb
 /taxiModel/App.config
 *.config
+*.settings
+/taxiModel_test/Settings1.Designer.cs
