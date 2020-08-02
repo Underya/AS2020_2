@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -28,12 +29,29 @@ namespace taxiModel
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            //Если нет строки подключения, выбрасывается ошибка
+            if (ConnectionString == "")
+                throw new Exception("Connection string not specified");
+
             if (!optionsBuilder.IsConfigured)
             {
-                //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseNpgsql("Host=localhost;Database=taxi;Username=taxi_driver;Password=1");
+                optionsBuilder.UseNpgsql(ConnectionString);
             }
         }
+
+        /// <summary>
+        /// Устанка строки соеденения с Базой данных
+        /// </summary>
+        /// <param name="ConnectingString"></param>
+        public static void SetConnectingString(string ConnectingString)
+        {
+            taxiContext.ConnectionString = ConnectingString;
+        }
+
+        /// <summary>
+        /// Строка для соеденения с Базой данных
+        /// </summary>
+        static string ConnectionString = "";
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
