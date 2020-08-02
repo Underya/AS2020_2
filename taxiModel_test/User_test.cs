@@ -9,7 +9,7 @@ namespace taxiModel_test
     /// Тесты для класса юзер
     /// </summary>
     [TestClass]
-    class User_test
+    public class User_test
     {
         /// <summary>
         /// Строка соеденения с БД
@@ -30,6 +30,7 @@ namespace taxiModel_test
         public void Initial()
         {
             ConnectionString = Settings1.Default.ConnectionString;
+            taxiContext.SetConnectionString(ConnectionString);
         }
 
         [TestMethod]
@@ -37,7 +38,6 @@ namespace taxiModel_test
         {
             Users user = new Users();
         }
-
 
         /// <summary>
         /// Создания нового пользователя

@@ -409,7 +409,7 @@ namespace taxiModel
                     .IsFixedLength();
 
                 entity.Property(e => e.Email)
-                    .HasColumnName("Email")
+                    .HasColumnName("email")
                     .HasMaxLength(200)
                     .IsFixedLength();
 
