@@ -43,9 +43,18 @@ namespace taxiModel
         /// Устанка строки соеденения с Базой данных
         /// </summary>
         /// <param name="ConnectingString"></param>
-        public static void SetConnectingString(string ConnectingString)
+        public static void SetConnectionString(string ConnectingString)
         {
             taxiContext.ConnectionString = ConnectingString;
+        }
+
+        /// <summary>
+        /// Получение текущей строки соеденения с Базой данных
+        /// </summary>
+        /// <returns></returns>
+        public static string GetConnectionString ()
+        {
+            return ConnectionString;
         }
 
         /// <summary>
