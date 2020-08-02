@@ -338,3 +338,7 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+/taxiModel/App.config
+*.config
+*.settings
+/taxiModel_test/Settings1.Designer.cs

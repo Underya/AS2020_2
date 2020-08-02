@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -28,12 +29,38 @@ namespace taxiModel
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            //Если нет строки подключения, выбрасывается ошибка
+            if (ConnectionString == "")
+                throw new Exception("Connection string not specified");
+
             if (!optionsBuilder.IsConfigured)
             {
-                //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseNpgsql("Host=localhost;Database=taxi;Username=taxi_driver;Password=1");
+                optionsBuilder.UseNpgsql(ConnectionString);
             }
         }
+
+        /// <summary>
+        /// Устанка строки соеденения с Базой данных
+        /// </summary>
+        /// <param name="ConnectingString"></param>
+        public static void SetConnectionString(string ConnectingString)
+        {
+            taxiContext.ConnectionString = ConnectingString;
+        }
+
+        /// <summary>
+        /// Получение текущей строки соеденения с Базой данных
+        /// </summary>
+        /// <returns></returns>
+        public static string GetConnectionString ()
+        {
+            return ConnectionString;
+        }
+
+        /// <summary>
+        /// Строка для соеденения с Базой данных
+        /// </summary>
+        static string ConnectionString = "";
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -352,7 +379,7 @@ namespace taxiModel
                     .HasName("xpkusers")
                     .IsUnique();
 
-                entity.HasIndex(e => e.Login)
+                entity.HasIndex(e => e.Email)
                     .HasName("xak1users")
                     .IsUnique();
 
@@ -368,7 +395,12 @@ namespace taxiModel
 
                 entity.Property(e => e.Hash)
                     .HasColumnName("hash")
-                    .HasMaxLength(200)
+                    .HasMaxLength(40)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Salt)
+                    .HasColumnName("salt")
+                    .HasMaxLength(40)
                     .IsFixedLength();
 
                 entity.Property(e => e.Lastname)
@@ -376,8 +408,8 @@ namespace taxiModel
                     .HasMaxLength(200)
                     .IsFixedLength();
 
-                entity.Property(e => e.Login)
-                    .HasColumnName("login")
+                entity.Property(e => e.Email)
+                    .HasColumnName("Email")
                     .HasMaxLength(200)
                     .IsFixedLength();
 
