@@ -379,7 +379,7 @@ namespace taxiModel
                     .HasName("xpkusers")
                     .IsUnique();
 
-                entity.HasIndex(e => e.Login)
+                entity.HasIndex(e => e.Email)
                     .HasName("xak1users")
                     .IsUnique();
 
@@ -395,7 +395,12 @@ namespace taxiModel
 
                 entity.Property(e => e.Hash)
                     .HasColumnName("hash")
-                    .HasMaxLength(200)
+                    .HasMaxLength(40)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Salt)
+                    .HasColumnName("salt")
+                    .HasMaxLength(40)
                     .IsFixedLength();
 
                 entity.Property(e => e.Lastname)
@@ -403,8 +408,8 @@ namespace taxiModel
                     .HasMaxLength(200)
                     .IsFixedLength();
 
-                entity.Property(e => e.Login)
-                    .HasColumnName("login")
+                entity.Property(e => e.Email)
+                    .HasColumnName("Email")
                     .HasMaxLength(200)
                     .IsFixedLength();
 

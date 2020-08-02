@@ -41,7 +41,7 @@ namespace taxiModel
 
         public void Refresh()
         {
-            Users users = UserSave.GetUser(Login);
+            Users users = UserSave.GetUser(Email);
             SetInfoUser(users);
         }
 
@@ -113,7 +113,7 @@ namespace taxiModel
             this.Lastname = user.Lastname;
             this.Midname = user.Midname;
             this.Number = user.Number;
-            this.Login = user.Login;
+            this.Email = user.Email;
             this.Hash = user.Hash;
             this.Sex = user.Sex;
             this.Ur = user.Ur;
@@ -130,7 +130,7 @@ namespace taxiModel
             using (taxiContext tc = new taxiContext())
             {
                 UserSave us = null; 
-                us = new UserSave( tc.Users.Where(p => p.Login == login).FirstOrDefault());
+                us = new UserSave( tc.Users.Where(p => p.Email == login).FirstOrDefault());
                 return us;
             }
 
