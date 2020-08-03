@@ -1,8 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations.Operations;
+﻿using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -19,19 +21,10 @@ namespace taxiModel
         /// <param name="password"></param>
         public void SetHashPassword(string password)
         {
-            Hash = GetHashPassword(password);
-        }
-
-        public static string s0(string s)
-        {
-            string ns = "";
-            int lastNotNull = 0;
-            for(int i = 0; i < s.Length; i++)
-            {
-                if (s[i] != ' ') lastNotNull = i;
-            }
-
-            return s.Substring(0, lastNotNull + 1);
+            string hash = "", salt = "";
+            GetPasswordSalt(password, out hash, out salt);
+            this.Hash = hash;
+            this.Salt = salt;
         }
 
         public UserSave(Users user)
@@ -133,8 +126,6 @@ namespace taxiModel
                 us = new UserSave( tc.Users.Where(p => p.Email == login).FirstOrDefault());
                 return us;
             }
-
-            return null;
         }
 
         public static bool CheckUser(string login, string password)
@@ -146,17 +137,9 @@ namespace taxiModel
 
                 if (u == null) return false;
 
-                string oldHash = u.Hash;
-
-                string newHash = GetHashPassword(password);
-
-                for(int i = 0; i < 20; i++)
-                {
-                    if (oldHash[i] != newHash[i]) return false;
-                }
+                return CheckPass(password, u.Hash, u.Salt);
             }
 
-            return true;
         }
 
         /// <summary>
@@ -168,21 +151,67 @@ namespace taxiModel
             this.Id = q.GetSeq1();
         }
 
-        static string GetHashPassword(string openPassord)
+        static bool CheckPassord(string encodingPass, string Salt)
         {
-            byte[] salt = new byte[8] { 10, 20, 30, 40, 50, 60, 70, 80 };
+
+
+            return true;
+        }
+
+        void SetPassword(string openPassord)
+        {
+            string sHash = "", sSalt = "";
+            GetPasswordSalt(openPassord, out sHash, out sSalt);
+            Hash = sHash;
+            Salt = sSalt;
+        }
+
+        /// <summary>
+        /// Получение по открытому параметру хешу и соли
+        /// </summary>
+        /// <param name="OpenPassword">Открытый пароль</param>
+        /// <param name="Hash">Возвращаемый хеш от пароля</param>
+        /// <param name="Salt">Соль, по которой сделан пароль</param>
+        static void GetPasswordSalt(string OpenPassword, out string Hash , out string Salt)
+        {
+            byte[] salt = new byte[40];
             byte[] hashedPassword = null;
 
-            using (Rfc2898DeriveBytes rngCsp = new Rfc2898DeriveBytes(openPassord, salt))
+            using (Rfc2898DeriveBytes rngCsp = new Rfc2898DeriveBytes(OpenPassword, 40, 10))
             {
-                hashedPassword = rngCsp.GetBytes(20);
+                hashedPassword = rngCsp.GetBytes(40);
+                salt = rngCsp.Salt;
             }
-            string ret = "";
-            foreach(byte b in hashedPassword)
+            string pass = "", strSalt = "";
+            for (int i = 0; i < 40; i++)
             {
-                ret += (char)b;
+                pass += (char)hashedPassword[i];
+                strSalt += (char)salt[i];
             }
-            return ret;
+            Hash = pass;
+            Salt = strSalt;
+        }
+
+        static bool CheckPass(string OpenPassowrd, string Hash, string Salt)
+        {
+            byte[] bSalt = new byte[40], bPass;
+            for(int i = 0; i < 40; i++)
+            {
+                bSalt[i] = (byte)Salt[i];
+            }
+
+            using (Rfc2898DeriveBytes rngCsp = new Rfc2898DeriveBytes(OpenPassowrd, bSalt))
+            {
+                bPass = rngCsp.GetBytes(40);
+            }
+
+            for(int i = 0; i < 40; i++)
+            {
+                if (bPass[i] != (byte)Hash[i]) 
+                    return false;
+            }
+
+            return true;
         }
     }
 }
