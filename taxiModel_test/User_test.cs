@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Linq;
 using System.Security.Cryptography;
 using taxiModel;
@@ -96,6 +98,36 @@ namespace taxiModel_test
             {
                 var users = tc.Users.Where(t => t.Id == -1);
                 Assert.AreEqual(0, users.Count());
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(DbUpdateException))]
+        public void s02_e01_TestIdentetiID()
+        {
+            using (taxiContext tc = new taxiContext())
+            {
+                Users user = new Users();
+                user.Id = -1;
+                user.Email = this.login;
+                user.Hash = this.password;
+                user.Salt = this.password;
+                tc.Users.Add(user);
+                tc.SaveChanges();
+                tc.Users.Add(user);
+                tc.SaveChanges();
+            }
+
+        }
+
+        [TestMethod]
+        public void s02_e02_ClearId()
+        {
+            using (taxiContext tc = new taxiContext())
+            {
+                Users user = tc.Users.Where(t => t.Id == -1).FirstOrDefault();
+                tc.Remove(user);
+                tc.SaveChanges();
             }
         }
     }
