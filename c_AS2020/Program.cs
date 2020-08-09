@@ -8,13 +8,15 @@ namespace c_AS2020
     {
         static void Main(string[] args)
         {
-            taxiContext.SetConnectionString("Host=localhost;Database=taxi;Username=taxi_driver;Password=1");
-            using (taxiContext tc = new taxiContext())
-            {
-                string str = "OpenPassword", email = "Email";
-                bool result = UserSave.CheckUser(email, str);
-                UserSave.GetUser(email);
-            }
+            taxiModel.check.EmailCheck c = new taxiModel.check.EmailCheck();
+            bool ret = c.Check("dawdd@dawd.ru");
+            ret = c.Check("dawdd@dawd.ru");
+            ret = c.Check("123dawdd@dawd.ru");
+            ret = c.Check("324212d@d113a231wd.r123u");
+            ret = c.Check("d.dawd.adw.dwa.awdd@dawdawdd.dru");
+            ret = c.Check("@dawd.ru");
+            ret = c.Check("dawdd@.ru");
+            ret = c.Check("dawdd@dawd.");
         }
     }
 }
