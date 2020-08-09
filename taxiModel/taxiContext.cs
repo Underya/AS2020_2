@@ -64,6 +64,8 @@ namespace taxiModel
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            //modelBuilder.HasSequence("s1");
+               
             modelBuilder.Entity<Function>(entity =>
             {
                 entity.ToTable("function");
@@ -375,6 +377,8 @@ namespace taxiModel
             {
                 entity.ToTable("users");
 
+                entity.Property(e => e.Id).HasColumnName("id");
+
                 entity.HasIndex(e => e.Id)
                     .HasName("xpkusers")
                     .IsUnique();
@@ -382,10 +386,6 @@ namespace taxiModel
                 entity.HasIndex(e => e.Email)
                     .HasName("xak1users")
                     .IsUnique();
-
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .ValueGeneratedNever();
 
                 entity.Property(e => e.Datebirth)
                     .HasColumnName("datebirth")
@@ -409,7 +409,7 @@ namespace taxiModel
                     .IsFixedLength();
 
                 entity.Property(e => e.Email)
-                    .HasColumnName("Email")
+                    .HasColumnName("email")
                     .HasMaxLength(200)
                     .IsFixedLength();
 
@@ -422,6 +422,8 @@ namespace taxiModel
                    .HasColumnName("number")
                    .HasMaxLength(200)
                    .IsFixedLength();
+
+                entity.Property(t => t.Id).HasComputedColumnSql("select nextval('s1')");
 
                 entity.Property(e => e.Photo).HasColumnName("photo");
 

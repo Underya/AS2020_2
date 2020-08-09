@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace taxiModel
 {
@@ -12,6 +13,7 @@ namespace taxiModel
             Ur = new HashSet<Ur>();
         }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; } 
         public string Lastname { get; set; }
         public string Midname { get; set; }
