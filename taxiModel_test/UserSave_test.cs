@@ -2,7 +2,6 @@
 using System;
 using System.Linq;
 using taxiModel;
-using System.Threading;
 
 namespace taxiModel_test
 {
