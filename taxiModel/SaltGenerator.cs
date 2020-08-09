@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 
 namespace taxiModel
 {
-    public class SaltGenerate
+    public class SaltGenerator
     {
         /// <summary>
         /// длина хеша и соли
@@ -17,13 +17,11 @@ namespace taxiModel
         /// </summary>
         int countIter = 10;
 
-        public SaltGenerate(int CountIter = 100, int Size = 40)
+        public SaltGenerator(int Size = 40, int CountIter = 100)
         {
             countIter = CountIter;
             size = Size;
         }
-
-
 
         /// <summary>
         /// Получение по открытому паролю 

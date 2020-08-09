@@ -9,7 +9,7 @@ namespace c_AS2020
         static void Main(string[] args)
         {
             taxiContext.SetConnectionString("Host=localhost;Database=taxi;Username=taxi_driver;Password=1");
-            SaltGenerate generate = new SaltGenerate();
+            SaltGenerator generate = new SaltGenerator();
             byte[] hash1 = null, salt1 = null, hash2 = null;
             string shash1 = "", shash2 = "", ssalt = "";
             string pass = "OpenPassword";
