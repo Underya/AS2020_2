@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Dynamic;
 using taxiModel;
 
 namespace c_AS2020
@@ -8,14 +9,19 @@ namespace c_AS2020
         static void Main(string[] args)
         {
             taxiContext.SetConnectionString("Host=localhost;Database=taxi;Username=taxi_driver;Password=1");
-            using(taxiContext tc = new taxiContext())
+            SaltGenerator generate = new SaltGenerator();
+            byte[] hash1 = null, salt1 = null, hash2 = null;
+            string shash1 = "", shash2 = "", ssalt = "";
+            string pass = "OpenPassword";
+            generate.GetOpenPassword(pass, out shash1, out ssalt);
+            shash2 =  generate.GetHash(pass, ssalt);
+            return;
+            using (taxiContext tc = new taxiContext())
             {
-                Users users = new Users();
-                users.Email = "dawd";
-                users.Hash = "daw";
-                users.Salt = "dawd";
-                tc.Users.Add(users);
-                tc.SaveChanges();
+                UserSave users = new UserSave();
+                users.SetHashPassword("OpenPassword");
+                UserSave.CheckUser("Email", "OpenPassword");
+                UserSave.GetUser("Email");
             }
         }
     }

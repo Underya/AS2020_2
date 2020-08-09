@@ -107,6 +107,7 @@ namespace taxiModel
             this.Midname = user.Midname;
             this.Number = user.Number;
             this.Email = user.Email;
+            this.Salt = user.Salt;
             this.Hash = user.Hash;
             this.Sex = user.Sex;
             this.Ur = user.Ur;
@@ -200,7 +201,7 @@ namespace taxiModel
                 bSalt[i] = (byte)Salt[i];
             }
 
-            using (Rfc2898DeriveBytes rngCsp = new Rfc2898DeriveBytes(OpenPassowrd, bSalt))
+            using (Rfc2898DeriveBytes rngCsp = new Rfc2898DeriveBytes(OpenPassowrd, bSalt, 10))
             {
                 bPass = rngCsp.GetBytes(40);
             }
