@@ -1,8 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
-using System.Security.Cryptography;
 using taxiModel;
+using System.Threading;
 
 namespace taxiModel_test
 {
@@ -30,7 +30,7 @@ namespace taxiModel_test
         UserSave CreateUser()
         {
             UserSave user = new UserSave();
-            user.Id = id;
+            user.Id = -1;
             user.Email = email;
             user.Datebirth = dateTime;
             user.Number = number;
@@ -115,7 +115,7 @@ namespace taxiModel_test
         [TestMethod]
         public void s01_e03_checkPass()
         {
-            Assert.IsTrue( UserSave.CheckUser(email, OpenPass));
+            Assert.IsTrue(UserSave.CheckUser(email, OpenPass));
         }
 
         [TestMethod]
@@ -123,8 +123,87 @@ namespace taxiModel_test
         {
             UserSave user = UserSave.GetUser(email);
             Assert.IsNotNull(user);
+        }
+
+        [TestMethod]
+        public void s01_e05_checkName()
+        {
+            UserSave user = UserSave.GetUser(email);
+            Assert.AreEqual(this.name, user.Firstname);
+        }
+
+        [TestMethod]
+        public void s01_e06_checkDate()
+        {
+            UserSave user = UserSave.GetUser(email);
+            Assert.AreEqual(this.dateTime, user.Datebirth);
+        }
+
+        [TestMethod]
+        public void s01_e99_deleteUser()
+        {
+            UserSave user = UserSave.GetUser(email);
             DeleteUser(user.Id);
         }
 
+        [TestMethod]
+        public void add2equalId()
+        {
+            bool exec = false;
+            using (taxiContext tc = new taxiContext())
+            {
+                Users user1 = new Users(), user2 = new Users();
+                user1.Id = id;
+                user2.Id = id;
+                user1.Email = email;
+                user2.Email = "new" + email;
+                try
+                {
+                    tc.Users.Add(user1);
+                    tc.Users.Add(user2);
+                    tc.SaveChanges();
+                }
+                catch
+                {
+                    exec = true;
+                }
+
+                if (!exec)
+                {
+                    DeleteUser(user1.Id);
+                    Assert.Fail();
+                }
+            }
+        }
+
+        [TestMethod]
+        public void add2equalEmail()
+        {
+            bool exec = false;
+            using (taxiContext tc = new taxiContext())
+            {
+                Users user1 = new Users(), user2 = new Users();
+                user1.Id = id;
+                user2.Id = id + id;
+                user1.Email = email;
+                user2.Email = email;
+                try
+                {
+                    tc.Users.Add(user1);
+                    tc.Users.Add(user2);
+                    tc.SaveChanges();
+                }
+                catch
+                {
+                    exec = true;
+                }
+
+                if (!exec)
+                {
+                    DeleteUser(user1.Id);
+                    Assert.Fail();
+                }
+            }
+        }
     }
 }
