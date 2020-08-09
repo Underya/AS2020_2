@@ -16,7 +16,7 @@ namespace taxiModel
     public class UserSave : Users
     {
         /// <summary>
-        /// Сохранение пароля как 
+        /// Сохранение пароля в закрытом виде
         /// </summary>
         /// <param name="password"></param>
         public void SetHashPassword(string password)
@@ -54,6 +54,10 @@ namespace taxiModel
 
         public List<Roles> Roles { get; set; }
         public List<Function> Functions { get; set; }
+
+        /// <summary>
+        /// Загрузка всех ролей и функций, связанных с пользователем
+        /// </summary>
         public void LoadRoleFunction()
         {
             Load();
@@ -61,6 +65,9 @@ namespace taxiModel
             LoadFunction();
         }
 
+        /// <summary>
+        /// Загрузка связанных ролей
+        /// </summary>
         void LoadRole()
         {
             List<Roles> roles = new List<Roles>();
@@ -78,6 +85,9 @@ namespace taxiModel
             this.Roles = roles;
         }
 
+        /// <summary>
+        /// Загрузка функций, связанных с ролью
+        /// </summary>
         void LoadFunction()
         {
             List<Function> functions = new List<Function>();
@@ -99,6 +109,10 @@ namespace taxiModel
             Functions = functions;
         }
 
+        /// <summary>
+        /// Получение информации из базового объекта
+        /// </summary>
+        /// <param name="user"></param>
         void SetInfoUser(Users user)
         {
             this.Firstname = user.Firstname;
@@ -114,11 +128,19 @@ namespace taxiModel
             this.Id = user.Id;
         }
 
+        /// <summary>
+        /// Создание пустого объекта
+        /// </summary>
         public UserSave()
         {
 
         }
 
+        /// <summary>
+        /// Получение пользователя с указанным логином
+        /// </summary>
+        /// <param name="login"></param>
+        /// <returns></returns>
         public static UserSave GetUser (string login)
         {
             using (taxiContext tc = new taxiContext())
@@ -129,9 +151,14 @@ namespace taxiModel
             }
         }
 
+        /// <summary>
+        /// Проверка, есть ли пользователь с таким логиным и паролем
+        /// </summary>
+        /// <param name="login"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         public static bool CheckUser(string login, string password)
         {
-
             using (taxiContext tc = new taxiContext())
             {
                 Users u = GetUser(login); 
@@ -144,27 +171,12 @@ namespace taxiModel
         }
 
         /// <summary>
-        /// 
+        /// Установка новогоуникального Id 
         /// </summary>
         public void SetNewId()
         {
             Seq q = new Seq();
             this.Id = q.GetSeq1();
-        }
-
-        static bool CheckPassord(string encodingPass, string Salt)
-        {
-
-
-            return true;
-        }
-
-        void SetPassword(string openPassord)
-        {
-            string sHash = "", sSalt = "";
-            GetPasswordSalt(openPassord, out sHash, out sSalt);
-            Hash = sHash;
-            Salt = sSalt;
         }
 
         /// <summary>
@@ -175,44 +187,22 @@ namespace taxiModel
         /// <param name="Salt">Соль, по которой сделан пароль</param>
         static void GetPasswordSalt(string OpenPassword, out string Hash , out string Salt)
         {
-            byte[] salt = new byte[40];
-            byte[] hashedPassword = null;
-
-            using (Rfc2898DeriveBytes rngCsp = new Rfc2898DeriveBytes(OpenPassword, 40, 10))
-            {
-                hashedPassword = rngCsp.GetBytes(40);
-                salt = rngCsp.Salt;
-            }
-            string pass = "", strSalt = "";
-            for (int i = 0; i < 40; i++)
-            {
-                pass += (char)hashedPassword[i];
-                strSalt += (char)salt[i];
-            }
-            Hash = pass;
-            Salt = strSalt;
+            SaltGenerator sg = new SaltGenerator();
+            sg.GetOpenPassword(OpenPassword, out Hash, out Salt);
         }
 
-        static bool CheckPass(string OpenPassowrd, string Hash, string Salt)
+        /// <summary>
+        /// Проверка открытого пароля на совпадание со старым паролем при указанной соли
+        /// </summary>
+        /// <param name="OpenPassword"></param>
+        /// <param name="Hash"></param>
+        /// <param name="Salt"></param>
+        /// <returns></returns>
+        static bool CheckPass(string OpenPassword, string Hash, string Salt)
         {
-            byte[] bSalt = new byte[40], bPass;
-            for(int i = 0; i < 40; i++)
-            {
-                bSalt[i] = (byte)Salt[i];
-            }
-
-            using (Rfc2898DeriveBytes rngCsp = new Rfc2898DeriveBytes(OpenPassowrd, bSalt, 10))
-            {
-                bPass = rngCsp.GetBytes(40);
-            }
-
-            for(int i = 0; i < 40; i++)
-            {
-                if (bPass[i] != (byte)Hash[i]) 
-                    return false;
-            }
-
-            return true;
+            SaltGenerator sg = new SaltGenerator();
+            string hash2 = sg.GetHash(OpenPassword, Salt);
+            return Hash == hash2;
         }
     }
 }
