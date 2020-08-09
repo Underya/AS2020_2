@@ -8,14 +8,12 @@ namespace c_AS2020
         static void Main(string[] args)
         {
             taxiContext.SetConnectionString("Host=localhost;Database=taxi;Username=taxi_driver;Password=1");
-            using(taxiContext tc = new taxiContext())
+            using (taxiContext tc = new taxiContext())
             {
-                Users users = new Users();
-                users.Email = "dawd";
-                users.Hash = "daw";
-                users.Salt = "dawd";
-                tc.Users.Add(users);
-                tc.SaveChanges();
+                UserSave users = new UserSave();
+                users.SetHashPassword("OpenPassword");
+                UserSave.CheckUser("Email", "OpenPassword");
+                UserSave.GetUser("Email");
             }
         }
     }
