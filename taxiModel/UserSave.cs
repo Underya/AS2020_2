@@ -4,9 +4,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
-using System.Text;
+using taxiModel.check;
+using taxiModel_test;
 
 namespace taxiModel
 {
@@ -177,6 +176,38 @@ namespace taxiModel
         {
             Seq q = new Seq();
             this.Id = q.GetSeq1();
+        }
+
+        /// <summary>
+        /// Установка для данного пользователя Email. Если он не соотвествует шаблону, будет выброшено исключение
+        /// </summary>
+        /// <param name="Email">Email пользователя, который должен соотвествовать шаблону email@site@com</param>
+        public void SetEmail(string Email)
+        {
+            EmailCheck emailCheck = new EmailCheck();
+            if (!emailCheck.Check(Email))
+            {
+                string result = string.Format("Email - {0} не соотвествует формату email@site@com", Email);
+                throw new System.Exception(result);
+            }
+
+            this.Email = Email;
+        }
+
+        /// <summary>
+        /// Установка для данного пользователя номера телефона. Если он не сотвествует формат 9 999-999-9999, то будет выброшено исключение
+        /// </summary>
+        /// <param name="Number">Номер телефона в формат 9 999-999-9999</param>
+        public void SetNumber(string Number)
+        {
+            NumberCheck numberCheck = new NumberCheck();
+            if (!numberCheck.Check(Number))
+            {
+                string message = string.Format("Номер телефона {0} не соотвесвует формату 9 999-999-9999", Number);
+                throw new Exception(message);
+            }
+
+            this.Number = Number;
         }
 
         /// <summary>
