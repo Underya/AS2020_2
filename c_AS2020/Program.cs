@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Dynamic;
 using taxiModel;
+using taxiModel_test;
 
 namespace c_AS2020
 {
@@ -8,15 +9,12 @@ namespace c_AS2020
     {
         static void Main(string[] args)
         {
-            taxiModel.check.EmailCheck c = new taxiModel.check.EmailCheck();
-            bool ret = c.Check("dawdd@dawd.ru");
-            ret = c.Check("dawdd@dawd.ru");
-            ret = c.Check("123dawdd@dawd.ru");
-            ret = c.Check("324212d@d113a231wd.r123u");
-            ret = c.Check("d.dawd.adw.dwa.awdd@dawdawdd.dru");
-            ret = c.Check("@dawd.ru");
-            ret = c.Check("dawdd@.ru");
-            ret = c.Check("dawdd@dawd.");
+            NumberCheck numberCheck = new NumberCheck();
+            bool res = true;
+            res = numberCheck.Check("1");
+            res = numberCheck.Check("12");
+            res = numberCheck.Check("123");
+            res = numberCheck.Check("1234");
         }
     }
 }

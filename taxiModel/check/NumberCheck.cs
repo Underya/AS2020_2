@@ -8,7 +8,9 @@ namespace taxiModel_test
     {
         public bool Check(string Number)
         {
-            return Regex.IsMatch(Number, "([0-9]){1}");
+            if (Number.Length != 14) 
+                return false;
+            return Regex.IsMatch(Number, @"\d{1} \d{3}-\d{3}-\d{4}");
         }
     }
 }
