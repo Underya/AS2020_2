@@ -188,7 +188,7 @@ namespace taxiModel
             if (!emailCheck.Check(Email))
             {
                 string result = string.Format("Email - {0} не соотвествует формату email@site@com", Email);
-                throw new System.Exception(result);
+                throw new Exception(result);
             }
 
             this.Email = Email;

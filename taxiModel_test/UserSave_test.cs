@@ -204,5 +204,35 @@ namespace taxiModel_test
                 }
             }
         }
+
+        [TestMethod]
+        public void addVerifedEmail()
+        {
+            UserSave user = new UserSave();
+            user.SetEmail(email);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(Exception))]
+        public void addNotVerifedEmail()
+        {
+            UserSave user = new UserSave();
+            user.SetEmail("not_email");
+        }
+
+        [TestMethod]
+        public void AddVerifedNumber()
+        {
+            UserSave user = new UserSave();
+            user.SetNumber(number);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(Exception))]
+        public void AddNotVerifedNumber()
+        {
+            UserSave user = new UserSave();
+            user.SetNumber(number + "-9999");
+        }
     }
 }
